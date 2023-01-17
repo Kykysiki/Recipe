@@ -3,7 +3,9 @@ package me.bulkanovga.recipeapp.service;
 import me.bulkanovga.recipeapp.model.Ingredient;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,5 +24,24 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient get(long id) {
         return ingredientMap.get(id);
+    }
+
+    @Override
+    public Ingredient update(long id, Ingredient ingredient) {
+        if (ingredientMap.containsKey(id)) {
+            ingredientMap.put(id, ingredient);
+            return ingredient;
+        }
+        return null;
+    }
+
+    @Override
+    public Ingredient remove(long id) {
+        return ingredientMap.remove(id);
+    }
+
+    @Override
+    public List<Ingredient> getAll() {
+        return new ArrayList<>(this.ingredientMap.values());
     }
 }
