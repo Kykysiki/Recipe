@@ -1,6 +1,7 @@
 package me.bulkanovga.recipeapp.service;
 
 import me.bulkanovga.recipeapp.model.Ingredient;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface IngredientService {
     Ingredient remove(long id);
 
     List<Ingredient> getAll();
+
+    void importIngredients(MultipartFile ingredients);
 }

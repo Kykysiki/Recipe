@@ -1,11 +1,11 @@
 package me.bulkanovga.recipeapp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.bulkanovga.recipeapp.model.Ingredient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
-    private void saveToJsonFile() {
+    private void saveToJsonFile(Map<Long, Ingredient> ingredientMap) {
         try {
             byte[] bytes = objectMapper.writeValueAsBytes(ingredientMap);
             Files.write(path, bytes);
@@ -67,7 +67,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient add(Ingredient ingredient) {
         Ingredient newIngredient = ingredientMap.put(this.counter++, ingredient);
-        saveToJsonFile();
+        saveToJsonFile(ingredientMap);
         return newIngredient;
     }
 
@@ -80,7 +80,7 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredient update(long id, Ingredient ingredient) {
         if (ingredientMap.containsKey(id)) {
             Ingredient newIngredient = ingredientMap.put(id, ingredient);
-            saveToJsonFile();
+            saveToJsonFile(ingredientMap);
             return ingredient;
         }
         return null;
@@ -89,12 +89,23 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient remove(long id) {
         Ingredient ingredient = ingredientMap.remove(id);
-        saveToJsonFile();
+        saveToJsonFile(ingredientMap);
         return ingredient;
     }
 
     @Override
     public List<Ingredient> getAll() {
         return new ArrayList<>(this.ingredientMap.values());
+    }
+
+    @Override
+    public void importIngredients(MultipartFile ingredients) {
+        try {
+            Map<Long, Ingredient> mapFromRequest = objectMapper.readValue(ingredients.getBytes(), new TypeReference<>() {
+            });
+            saveToJsonFile(mapFromRequest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
