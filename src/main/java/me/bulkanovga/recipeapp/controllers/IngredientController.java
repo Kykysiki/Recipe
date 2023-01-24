@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import me.bulkanovga.recipeapp.model.Ingredient;
 import me.bulkanovga.recipeapp.service.IngredientService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +21,7 @@ public class IngredientController {
     public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
     }
+
     @GetMapping
     @Operation(description = "Отображение всех ингредиентов")
     private List<Ingredient> getAll() {
@@ -36,11 +36,13 @@ public class IngredientController {
         }
         return ResponseEntity.ok(ingredientService.add(ingredient));
     }
+
     @GetMapping("/{id}")
     @Operation(description = "Отображение ингредиента")
     public Ingredient getIngredient(@PathVariable("id") long id) {
         return this.ingredientService.get(id);
     }
+
     @PutMapping("/{id}")
     @Operation(description = "Изменение ингредиента")
     public ResponseEntity<?> updateIngredient(@PathVariable("id") long id, @RequestBody Ingredient ingredient) {
@@ -55,6 +57,7 @@ public class IngredientController {
     public Ingredient deleteIngredient(@PathVariable("id") long id) {
         return ingredientService.remove(id);
     }
+
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void importIngredient(MultipartFile ingredients) {
         ingredientService.importIngredients(ingredients);

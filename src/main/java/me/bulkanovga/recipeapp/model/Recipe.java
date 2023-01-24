@@ -3,6 +3,7 @@ package me.bulkanovga.recipeapp.model;
 import lombok.Data;
 
 import java.util.List;
+
 @Data
 public class Recipe {
     private String recipeName;
